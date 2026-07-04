@@ -64,13 +64,15 @@ func (g *app) Serve() {
 			Err(err).
 			Str("addr", g.httpServer.Addr).
 			Msg("Failed to listen for HTTP server")
+
+		return
 	}
 
 	g.log.Info().
-		Msg("HTTP server already started at " + g.httpServer.Addr)
+		Msg("HTTP server started at " + g.httpServer.Addr)
 
 	wg.Go(func() {
-		if serveErr := g.httpServer.Serve(httpListener); serveErr != nil {
+		if serveErr := g.httpServer.Serve(httpListener); serveErr != nil && serveErr != http.ErrServerClosed {
 			g.log.Error().
 				Err(serveErr).
 				Msg("HTTP server error")

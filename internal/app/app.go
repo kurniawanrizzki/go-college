@@ -63,9 +63,7 @@ func Run() {
 
 	mw := middleware.InitMiddleware(log, conf.Middleware, conf.Tracer.Enabled, metricsInst)
 	httpMux := httpmux.InitHttpMux(log, metricsInst)
-
 	httpHandler.InitHttpHandler(httpMux, mw, svc, sql0)
-
 	httpServer := httpserver.InitHttpServer(log, conf.HTTP.Server, mw, svc, httpMux)
 
 	var metricsServer *http.Server

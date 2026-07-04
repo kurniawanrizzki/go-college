@@ -1,5 +1,7 @@
 package main
 
-func Run() {
-	
+import "go-college/internal/app"
+
+func main() {
+	app.Run()
 }

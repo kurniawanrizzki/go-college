@@ -29,13 +29,13 @@ type middleware struct {
 }
 
 type MiddlewareOptions struct {
-	PublicPaths []string
-	RateLimiter RateLimiterOptions
+	PublicPaths []string           `yaml:"public_paths"`
+	RateLimiter RateLimiterOptions `yaml:"rate_limiter"`
 }
 
 type RateLimiterOptions struct {
-	Command string
-	Limit   int
+	Command string `yaml:"command"`
+	Limit   int    `yaml:"limit"`
 }
 
 const TimeFormat = time.RFC3339

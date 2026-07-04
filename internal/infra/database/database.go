@@ -11,18 +11,18 @@ import (
 )
 
 type DatabaseOptions struct {
-	Driver          string
-	Host            string
-	User            string
-	Password        string
-	DBName          string
-	Port            int
-	ConnMaxLifetime time.Duration
-	ConnMaxIdleTime time.Duration
-	MaxConns        int32
-	MinConns        int32
-	Enabled         bool
-	SSLMode         bool
+	Driver          string        `yaml:"driver"`
+	Host            string        `yaml:"host"`
+	User            string        `yaml:"user"`
+	Password        string        `yaml:"password"`
+	DBName          string        `yaml:"dbname"`
+	Port            int           `yaml:"port"`
+	ConnMaxLifetime time.Duration `yaml:"conn_max_lifetime"`
+	ConnMaxIdleTime time.Duration `yaml:"conn_max_idle_time"`
+	MaxConns        int32         `yaml:"max_conns"`
+	MinConns        int32         `yaml:"min_conns"`
+	Enabled         bool          `yaml:"enabled"`
+	SSLMode         bool          `yaml:"sslmode"`
 }
 
 func InitDB(log *zerolog.Logger, opt *DatabaseOptions) *pgxpool.Pool {

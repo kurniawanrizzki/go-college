@@ -19,6 +19,11 @@ const (
 	LATENCY    string = "latency"
 	USER_AGENT string = "user_agent"
 
+	APP_LANG string = `x-app-lang`
+
+	LANG_EN string = `en`
+	LANG_ID string = `id`
+
 	HeaderAccessControlAllowOrigin  string = "Access-Control-Allow-Origin"
 	HeaderAccessControlAllowHeaders string = "Access-Control-Allow-Headers"
 	HeaderAccessControlAllowMethods string = "Access-Control-Allow-Methods"
@@ -39,4 +44,7 @@ const (
 
 	HeaderContentType string = "Content-Type"
 	ContentTypeJSON   string = "application/json"
+
+	//API Routes
+	RouteCreateCollege string = "/college/create"
 )

@@ -68,6 +68,9 @@ middleware:
   public_paths:
     - /debug/*
     - /favicon.ico
+  rate_limiter:
+    command: 1-S # 1 request per second
+    limit: 500 # max 500 clients
 
 queries:
   path: ./configs/queries/
