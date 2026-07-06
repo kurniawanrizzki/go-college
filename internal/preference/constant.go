@@ -47,4 +47,5 @@ const (
 
 	//API Routes
 	RouteCreateCollege string = "/college/create"
+	RouteGetColleges string = "/college/all"
 )

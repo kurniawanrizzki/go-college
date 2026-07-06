@@ -38,3 +38,7 @@ func (d *collegeRepositoryImpl) Create(ctx context.Context, college *entity.Coll
 
 	return college, nil
 }
+
+func (d *collegeRepositoryImpl) FindAll(ctx context.Context) (*[]entity.College, error) {
+	return d.findSQLColleges(ctx)
+}

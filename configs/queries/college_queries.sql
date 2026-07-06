@@ -3,6 +3,9 @@ INSERT INTO college (nim, name, semester, sks, active)
 VALUES ({{ arg .NIM }}, {{ arg .Name }}, {{ arg .Semester }}, {{ arg .SKS }}, true)
 RETURNING created_at, updated_at
 
+-- name: FindColleges
+SELECT * FROM college
+
 -- name: FindCollegeByNim
 SELECT * FROM college WHERE nim = {{ arg .NIM }}
 

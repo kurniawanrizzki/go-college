@@ -24,3 +24,7 @@ func (s *collegeServiceImpl) Create(ctx context.Context, req dto.CreateCollegeRe
 
 	return college, nil
 }
+
+func (s *collegeServiceImpl) FindAll(ctx context.Context) (*[]entity.College, error) {
+	return s.repository.FindAll(ctx)
+}

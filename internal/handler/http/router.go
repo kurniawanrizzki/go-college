@@ -39,4 +39,5 @@ func (e *rest) Serve() {
 	handler := e.mw.Handler()
 
 	e.mux.Handle("POST "+preference.RouteCreateCollege, handler(http.HandlerFunc(e.CreateCollege)))
+	e.mux.Handle("GET "+preference.RouteGetColleges, handler(http.HandlerFunc(e.FindAll)))
 }

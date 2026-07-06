@@ -15,7 +15,7 @@ type CollegeRepository interface {
 	// Delete(ctx context.Context, nim string) error
 	// FindByNim(ctx context.Context, nim string) (*entity.College, error)
 	// FindBySemester(ctx context.Context, semester int) (*[]entity.College, error)
-	// FindAll(ctx context.Context) (*[]entity.College, error)
+	FindAll(ctx context.Context) (*[]entity.College, error)
 }
 
 type collegeRepositoryImpl struct {

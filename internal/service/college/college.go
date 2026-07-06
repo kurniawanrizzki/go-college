@@ -11,6 +11,7 @@ import (
 
 type CollegeService interface {
 	Create(ctx context.Context, req dto.CreateCollegeRequest) (*entity.College, error)
+	FindAll(ctx context.Context) (*[]entity.College, error)
 }
 
 type collegeServiceImpl struct {

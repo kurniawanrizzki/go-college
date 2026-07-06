@@ -21,11 +21,23 @@ func (e *rest) CreateCollege(w http.ResponseWriter, r *http.Request) {
 	}
 
 	college, err := e.svc.College.Create(ctx, req)
-	
+
 	if err != nil {
 		e.httpRespError(w, r, err)
 		return
 	}
 
 	e.httpRespSuccess(w, r, http.StatusCreated, college)
+}
+
+func (e *rest) FindAll(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	colleges, err := e.svc.College.FindAll(ctx)
+
+	if err != nil {
+		e.httpRespError(w, r, err)
+		return
+	}
+
+	e.httpRespSuccess(w, r, http.StatusOK, colleges)
 }
