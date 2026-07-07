@@ -9,5 +9,16 @@ SELECT * FROM college
 -- name: FindCollegeByNim
 SELECT * FROM college WHERE nim = {{ arg .NIM }}
 
+-- name: FindCollegeBySemester
+SELECT * FROM college WHERE semester = {{ arg .Semester }}
+
 -- name: FindCollegeByName
-SELECT * FROM college WHERE name LIKE '%' || {{ arg .Name }} || '%'
+SELECT * FROM college WHERE name ILIKE '%' || {{ arg .Name }} || '%'
+
+-- name: UpdateCollege
+UPDATE college
+SET name = {{ arg .Name }}, semester = {{ arg .Semester }}, sks = {{ arg .SKS }}, active = {{ arg .Active }}, updated_at = {{ arg .UpdatedAt }}
+WHERE nim = {{ arg .NIM }};
+
+-- name: DeleteCollege
+DELETE FROM college WHERE nim = {{ arg .NIM }};

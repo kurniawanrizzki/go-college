@@ -46,6 +46,9 @@ const (
 	ContentTypeJSON   string = "application/json"
 
 	//API Routes
-	RouteCreateCollege string = "/college/create"
-	RouteGetColleges string = "/college/all"
+	RouteCreateCollege     string = "/college/create"
+	RouteGetColleges       string = "/college/all"
+	RouteCollegeByNIM      string = "/college/{nim}"
+	RouteCollegeBySemester string = "/college/semester/{semester}"
+	RouteCollegeByName     string = "/college/name/{name}"
 )

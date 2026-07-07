@@ -40,4 +40,9 @@ func (e *rest) Serve() {
 
 	e.mux.Handle("POST "+preference.RouteCreateCollege, handler(http.HandlerFunc(e.CreateCollege)))
 	e.mux.Handle("GET "+preference.RouteGetColleges, handler(http.HandlerFunc(e.FindAll)))
+	e.mux.Handle("GET "+preference.RouteCollegeByNIM, handler(http.HandlerFunc(e.FindByNim)))
+	e.mux.Handle("GET "+preference.RouteCollegeByName, handler(http.HandlerFunc(e.FindByName)))
+	e.mux.Handle("GET "+preference.RouteCollegeBySemester, handler(http.HandlerFunc(e.FindBySemester)))
+	e.mux.Handle("PUT "+preference.RouteCollegeByNIM, handler(http.HandlerFunc(e.UpdateCollege)))
+	e.mux.Handle("DELETE "+preference.RouteCollegeByNIM, handler(http.HandlerFunc(e.DeleteCollege)))
 }

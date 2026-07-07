@@ -15,7 +15,7 @@ func (d *collegeRepositoryImpl) Create(ctx context.Context, college *entity.Coll
 		return college, appErr.Wrap(err, "tx_create_college")
 	}
 	rolledBack := false
-	
+
 	defer func() {
 		if !rolledBack {
 			_ = tx.Rollback(ctx)
@@ -40,5 +40,27 @@ func (d *collegeRepositoryImpl) Create(ctx context.Context, college *entity.Coll
 }
 
 func (d *collegeRepositoryImpl) FindAll(ctx context.Context) (*[]entity.College, error) {
-	return d.findSQLColleges(ctx)
+	return d.findSQLByArgs(ctx, "colleges", "FindColleges", nil)
+}
+
+func (d *collegeRepositoryImpl) Update(ctx context.Context, college *entity.College) error {
+	query, args, err := d.queryLoader.Compile("UpdateCollege", college)
+	return d.executeSQLCollege(ctx, "update", query, args, err)
+}
+
+func (d *collegeRepositoryImpl) Delete(ctx context.Context, nim string) error {
+	query, args, err := d.queryLoader.Compile("DeleteCollege", map[string]any{"NIM": nim})
+	return d.executeSQLCollege(ctx, "delete", query, args, err)
+}
+
+func (d *collegeRepositoryImpl) FindByNim(ctx context.Context, nim string) (*entity.College, error) {
+	return d.findSQLCollegeByNIM(ctx, nim)
+}
+
+func (d *collegeRepositoryImpl) FindByName(ctx context.Context, name string) (*[]entity.College, error) {
+	return d.findSQLByArgs(ctx, "nim", "FindCollegeByName", map[string]any{"Name": name})
+}
+
+func (d *collegeRepositoryImpl) FindBySemester(ctx context.Context, semester int) (*[]entity.College, error) {
+	return d.findSQLByArgs(ctx, "semester", "FindCollegeBySemester", map[string]any{"Semester": semester})
 }

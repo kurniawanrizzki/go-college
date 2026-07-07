@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"time"
 
-	httpHandler "go-college/internal/handler/http"
+	httpHandler "go-college/internal/handler"
 	httpclient "go-college/internal/infra/http/client"
 	httpmux "go-college/internal/infra/http/mux"
 	httpserver "go-college/internal/infra/http/server"

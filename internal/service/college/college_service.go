@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-college/internal/model/dto"
 	"go-college/internal/model/entity"
+	appErr "go-college/internal/model/errors"
 )
 
 func (s *collegeServiceImpl) Create(ctx context.Context, req dto.CreateCollegeRequest) (*entity.College, error) {
@@ -27,4 +28,53 @@ func (s *collegeServiceImpl) Create(ctx context.Context, req dto.CreateCollegeRe
 
 func (s *collegeServiceImpl) FindAll(ctx context.Context) (*[]entity.College, error) {
 	return s.repository.FindAll(ctx)
+}
+
+func (s *collegeServiceImpl) Update(ctx context.Context, nim string, req *dto.UpdateCollegeRequest) (*entity.College, error) {
+	existing, err := s.FindByNim(ctx, nim)
+
+	if err != nil {
+		return nil, appErr.WrapWithCode(err, appErr.CodeHTTPNotFound, "college_not_found")
+	}
+
+	if req.Name != "" {
+		existing.Name = req.Name
+	}
+
+	if req.SKS != 0 {
+		existing.SKS = req.SKS
+	}
+
+	if req.Semester != 0 {
+		existing.Semester = req.Semester
+	}
+
+	if req.Active != nil {
+		existing.Active = *req.Active
+	}
+
+	if err = s.repository.Update(
+		ctx,
+		existing,
+	); err != nil {
+		return nil, err
+	}
+
+	return existing, nil
+}
+
+func (s *collegeServiceImpl) Delete(ctx context.Context, nim string) error {
+	return s.repository.Delete(ctx, nim)
+}
+
+func (s *collegeServiceImpl) FindByNim(ctx context.Context, nim string) (*entity.College, error) {
+	return s.repository.FindByNim(ctx, nim)
+}
+
+func (s *collegeServiceImpl) FindByName(ctx context.Context, name string) (*[]entity.College, error) {
+	return s.repository.FindByName(ctx, name)
+}
+
+func (s *collegeServiceImpl) FindBySemester(ctx context.Context, semester int) (*[]entity.College, error) {
+	return s.repository.FindBySemester(ctx, semester)
 }
