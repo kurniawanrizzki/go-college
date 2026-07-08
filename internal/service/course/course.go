@@ -2,6 +2,7 @@ package course
 
 import (
 	"context"
+
 	"go-college/internal/model/dto"
 	"go-college/internal/model/entity"
 	"go-college/internal/repository/course"
@@ -18,13 +19,13 @@ type CourseService interface {
 }
 
 type courseServiceImpl struct {
-	log *zerolog.Logger
+	log        *zerolog.Logger
 	repository course.CourseRepository
 }
 
 func InitCourseService(log *zerolog.Logger, repository course.CourseRepository) CourseService {
 	return &courseServiceImpl{
-		log: log,
+		log:        log,
 		repository: repository,
 	}
 }

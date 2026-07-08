@@ -2,9 +2,10 @@ package rest
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"go-college/internal/model/dto"
 	appErr "go-college/internal/model/errors"
-	"net/http"
 
 	"github.com/rs/zerolog"
 )

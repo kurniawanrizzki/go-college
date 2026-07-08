@@ -1,11 +1,12 @@
 package service
 
 import (
+	"net/http"
+
 	"go-college/internal/repository"
 	"go-college/internal/service/college"
 	"go-college/internal/service/course"
 	"go-college/internal/service/enrollment"
-	"net/http"
 
 	"github.com/rs/zerolog"
 )

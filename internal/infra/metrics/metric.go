@@ -2,8 +2,8 @@ package metrics
 
 import (
 	"expvar"
-	"strconv"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -25,24 +25,24 @@ type Metrics interface {
 }
 
 type metricsImpl struct {
-	log 			*zerolog.Logger
-	pool 			*pgxpool.Pool
-	httpDuration 	*prometheus.HistogramVec
-	httpRequests 	*prometheus.CounterVec
+	log          *zerolog.Logger
+	pool         *pgxpool.Pool
+	httpDuration *prometheus.HistogramVec
+	httpRequests *prometheus.CounterVec
 }
 
 var (
-	reg 							*prometheus.Registry
-	onceMetrics 					sync.Once
-	metricsInst 					Metrics
-	httpRequestDurationBuckets = 	[]float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
+	reg                        *prometheus.Registry
+	onceMetrics                sync.Once
+	metricsInst                Metrics
+	httpRequestDurationBuckets = []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
 )
 
 func GetRegistry() *prometheus.Registry {
 	return reg
 }
 
-func InitMetrics(log * zerolog.Logger, pool *pgxpool.Pool) Metrics {
+func InitMetrics(log *zerolog.Logger, pool *pgxpool.Pool) Metrics {
 	onceMetrics.Do(func() {
 		reg = prometheus.NewRegistry()
 
@@ -51,8 +51,8 @@ func InitMetrics(log * zerolog.Logger, pool *pgxpool.Pool) Metrics {
 
 		httpDuration := prometheus.NewHistogramVec(
 			prometheus.HistogramOpts{
-				Name: "http_request_duration_seconds",
-				Help: "HTTP request duratoin in seconds",
+				Name:    "http_request_duration_seconds",
+				Help:    "HTTP request duratoin in seconds",
 				Buckets: httpRequestDurationBuckets,
 			},
 			[]string{"method", "path", "status"},
@@ -69,15 +69,14 @@ func InitMetrics(log * zerolog.Logger, pool *pgxpool.Pool) Metrics {
 			},
 			[]string{"method", "path", "status"},
 		)
-		
 
 		if err := reg.Register(httpRequests); err != nil {
 			log.Warn().Err(err).Msg("failed to register httpRequests metric")
 		}
 
 		metricsInst = &metricsImpl{
-			log: log,
-			pool: pool,
+			log:          log,
+			pool:         pool,
 			httpDuration: httpDuration,
 			httpRequests: httpRequests,
 		}

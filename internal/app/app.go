@@ -2,9 +2,17 @@ package app
 
 import (
 	"flag"
+	"log"
+	"net/http"
+	"time"
+
 	"go-college/internal/config"
+	httpHandler "go-college/internal/handler"
 	"go-college/internal/infra/database"
 	"go-college/internal/infra/grace"
+	httpclient "go-college/internal/infra/http/client"
+	httpmux "go-college/internal/infra/http/mux"
+	httpserver "go-college/internal/infra/http/server"
 	"go-college/internal/infra/logger"
 	"go-college/internal/infra/metrics"
 	"go-college/internal/infra/query"
@@ -13,14 +21,6 @@ import (
 	"go-college/internal/repository"
 	"go-college/internal/service"
 	"go-college/internal/util"
-	"log"
-	"net/http"
-	"time"
-
-	httpHandler "go-college/internal/handler"
-	httpclient "go-college/internal/infra/http/client"
-	httpmux "go-college/internal/infra/http/mux"
-	httpserver "go-college/internal/infra/http/server"
 )
 
 const (

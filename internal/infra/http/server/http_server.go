@@ -2,11 +2,12 @@ package server
 
 import (
 	"fmt"
-	"go-college/internal/middleware"
-	"go-college/internal/service"
 	"net/http"
 	"sync"
 	"time"
+
+	"go-college/internal/middleware"
+	"go-college/internal/service"
 
 	"github.com/rs/zerolog"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"

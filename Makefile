@@ -7,16 +7,37 @@ DOCS_DIR    := ./api/openapi
 GO          := go
 SWAG        := swag
 
-.PHONY: help swagger build run tidy clean
+.PHONY: help swagger build run tidy clean lint install-tools
 
 ## Show available targets
 help:
 	@echo "Targets:"
-	@echo "  make swagger   Generate Swagger API docs into $(DOCS_DIR)"
-	@echo "  make build     Build the application into $(BIN_DIR)/$(BINARY_NAME)"
-	@echo "  make run       Build and run the application"
-	@echo "  make tidy      Tidy go modules"
-	@echo "  make clean     Remove build artifacts"
+	@echo "  make install-tools  Install dev tools (swag, golangci-lint, staticcheck)"
+	@echo "  make swagger        Generate Swagger API docs into $(DOCS_DIR)"
+	@echo "  make build          Build the application into $(BIN_DIR)/$(BINARY_NAME)"
+	@echo "  make run            Build and run the application"
+	@echo "  make lint           Run golangci-lint"
+	@echo "  make tidy           Tidy go modules"
+	@echo "  make clean          Remove build artifacts"
+
+## Run linter
+lint:
+	@echo "Running golangci-lint..."
+	@if command -v golangci-lint >/dev/null 2>&1; then \
+		golangci-lint run; \
+	else \
+		echo "golangci-lint not installed. Run: make install-tools"; \
+		exit 1; \
+	fi
+	@echo "golangci-lint finished."
+
+## Install development tools
+install-tools:
+	@echo "Installing tools..."
+	@$(GO) install github.com/swaggo/swag/cmd/swag@latest
+	@$(GO) install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+	@$(GO) install honnef.co/go/tools/cmd/staticcheck@latest
+	@echo "Tools installed. Ensure $$(go env GOPATH)/bin is on your PATH."
 
 ## Generate swagger documentation
 swagger:

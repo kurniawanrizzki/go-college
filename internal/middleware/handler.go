@@ -20,7 +20,6 @@ type errorResp struct {
 // contextKey is a custom type for context keys
 type contextKey string
 
-
 // responseWriter wraps http.ResponseWriter to capture the status code
 type responseWriter struct {
 	http.ResponseWriter
@@ -107,7 +106,8 @@ func (mw *middleware) Handler() func(http.Handler) http.Handler {
 func (mw *middleware) shouldSkipAuthAndLog(path string) bool {
 	return strings.HasPrefix(path, "/swagger/") ||
 		strings.HasPrefix(path, "/metrics") ||
-		strings.HasPrefix(path, "/debug/")
+		strings.HasPrefix(path, "/debug/") ||
+		mw.isPublicPath(path)
 }
 
 func (mw *middleware) recordMetrics(r *http.Request, status int, start time.Time) {

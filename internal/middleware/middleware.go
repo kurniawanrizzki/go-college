@@ -1,14 +1,15 @@
 package middleware
 
 import (
-	"go-college/internal/infra/metrics"
-	appErr "go-college/internal/model/errors"
-	"go-college/internal/preference"
 	"net/http"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"go-college/internal/infra/metrics"
+	appErr "go-college/internal/model/errors"
+	"go-college/internal/preference"
 
 	"github.com/rs/zerolog"
 )

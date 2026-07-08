@@ -3,6 +3,7 @@ package enrollment
 import (
 	"context"
 	"fmt"
+
 	"go-college/internal/model/entity"
 	appErr "go-college/internal/model/errors"
 	"go-college/internal/util"
@@ -75,9 +76,9 @@ func (d *enrollmentRepositoryImpl) findSQLDetailByNim(ctx context.Context, nim s
 	for rows.Next() {
 		var detail entity.EnrollmentDetail
 		if scanErr := rows.Scan(
-			&detail.Course.Code,
-			&detail.Course.Name,
-			&detail.Course.SKS,
+			&detail.Code,
+			&detail.Name,
+			&detail.SKS,
 			&detail.Course.CreatedAt,
 			&detail.Course.UpdatedAt,
 			&detail.Semester,

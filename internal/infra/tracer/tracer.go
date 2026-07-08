@@ -46,7 +46,7 @@ func InitTracer(log *zerolog.Logger, opt *TracerOptions) Tracer {
 
 	serviceName := opt.Name
 	if serviceName == "" {
-		serviceName = "go-far-app"
+		serviceName = "go-college-app"
 	}
 
 	serviceVersion := opt.Version

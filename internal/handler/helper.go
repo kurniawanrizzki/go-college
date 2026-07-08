@@ -3,11 +3,12 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
+
 	"go-college/internal/model/dto"
 	appErr "go-college/internal/model/errors"
 	"go-college/internal/preference"
-	"net/http"
-	"time"
 )
 
 func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCode int, resp any) {
@@ -21,8 +22,8 @@ func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCod
 	}
 
 	httpResp := &dto.HttpSuccessResp{
-		Meta:       meta,
-		Data:       any(resp),
+		Meta: meta,
+		Data: any(resp),
 	}
 
 	writeJSON(w, statusCode, httpResp)

@@ -1,6 +1,8 @@
 package config
 
 import (
+	"os"
+
 	"go-college/internal/infra/database"
 	app "go-college/internal/infra/grace"
 	httpclient "go-college/internal/infra/http/client"
@@ -10,7 +12,6 @@ import (
 	"go-college/internal/infra/query"
 	"go-college/internal/infra/tracer"
 	"go-college/internal/middleware"
-	"os"
 
 	"gopkg.in/yaml.v3"
 )

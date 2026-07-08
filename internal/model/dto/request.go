@@ -18,12 +18,12 @@ type UpdateCollegeRequest struct {
 type CreateCourseRequest struct {
 	Code string
 	Name string
-	SKS int
+	SKS  int
 }
 
 type UpdateCourseRequest struct {
 	Name string
-	SKS int
+	SKS  int
 }
 
 type CreateEnrollmentRequest struct {

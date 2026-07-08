@@ -2,6 +2,7 @@ package course
 
 import (
 	"context"
+
 	"go-college/internal/infra/query"
 	"go-college/internal/model/entity"
 
