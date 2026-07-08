@@ -50,4 +50,8 @@ func (e *rest) Serve() {
 	e.mux.Handle("GET "+preference.RouteCourseByCode, handler(http.HandlerFunc(e.GetCourseByCode)))
 	e.mux.Handle("PUT "+preference.RouteCourseByCode, handler(http.HandlerFunc(e.UpdateCourse)))
 	e.mux.Handle("DELETE "+preference.RouteCourseByCode, handler(http.HandlerFunc(e.DeleteCourse)))
+	e.mux.Handle("POST "+preference.RouteCreateEnrollment, handler(http.HandlerFunc(e.CreateEnrollment)))
+	e.mux.Handle("GET "+preference.RouteEnrollmentByNIM, handler(http.HandlerFunc(e.GetEnrollmentsByNim)))
+	e.mux.Handle("PUT "+preference.RouteEnrollmentByNimCode, handler(http.HandlerFunc(e.UpdateEnrollment)))
+	e.mux.Handle("DELETE "+preference.RouteEnrollmentByID, handler(http.HandlerFunc(e.DeleteEnrollment)))
 }

@@ -7,7 +7,7 @@ type Enrollment struct {
 	NIM       string
 	Course    string
 	Semester  int
-	grade     string
+	Grade     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -15,7 +15,7 @@ type Enrollment struct {
 type EnrollmentDetail struct {
 	Course
 	Semester  int
-	grade     string
+	Grade     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

@@ -4,14 +4,16 @@ import (
 	"go-college/internal/repository"
 	"go-college/internal/service/college"
 	"go-college/internal/service/course"
+	"go-college/internal/service/enrollment"
 	"net/http"
 
 	"github.com/rs/zerolog"
 )
 
 type Service struct {
-	College college.CollegeService
-	Course  course.CourseService
+	College    college.CollegeService
+	Course     course.CourseService
+	Enrollment enrollment.EnrollmentService
 }
 
 func InitService(log *zerolog.Logger, repo *repository.Repository, httpClient *http.Client) *Service {
@@ -23,6 +25,10 @@ func InitService(log *zerolog.Logger, repo *repository.Repository, httpClient *h
 		Course: course.InitCourseService(
 			log,
 			repo.Course,
+		),
+		Enrollment: enrollment.InitEnrollmentService(
+			log,
+			repo.Enrollment,
 		),
 	}
 

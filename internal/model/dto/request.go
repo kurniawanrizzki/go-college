@@ -25,3 +25,14 @@ type UpdateCourseRequest struct {
 	Name string
 	SKS int
 }
+
+type CreateEnrollmentRequest struct {
+	NIM      string
+	Course   string
+	Semester int
+}
+
+type UpdateEnrollmentRequest struct {
+	Semester int
+	Grade    string
+}

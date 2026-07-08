@@ -54,4 +54,8 @@ const (
 	RouteCreateCourse      string = "/course/create"
 	RouteGetCourses        string = "/course/all"
 	RouteCourseByCode      string = "/course/{code}"
+	RouteCreateEnrollment    string = "/enrollment/create"
+	RouteEnrollmentByID      string = "/enrollment/{id}"
+	RouteEnrollmentByNIM     string = "/enrollment/nim/{nim}"
+	RouteEnrollmentByNimCode string = "/enrollment/{nim}/{course}"
 )
