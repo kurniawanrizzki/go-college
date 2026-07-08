@@ -1,0 +1,1082 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "RESTful API for managing colleges, courses, and enrollments.",
+        "title": "Go-College API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "host": "localhost:8181",
+    "paths": {
+        "/college/all": {
+            "get": {
+                "description": "Retrieve all college records",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "colleges"
+                ],
+                "summary": "List all colleges",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.College"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/college/create": {
+            "post": {
+                "description": "Create a new college record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "colleges"
+                ],
+                "summary": "Create a new college",
+                "parameters": [
+                    {
+                        "description": "College data",
+                        "name": "college",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCollegeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.College"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/college/name/{name}": {
+            "get": {
+                "description": "Retrieve colleges matching the given name",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "colleges"
+                ],
+                "summary": "Find colleges by name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "College name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.College"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/college/semester/{semester}": {
+            "get": {
+                "description": "Retrieve colleges in the given semester",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "colleges"
+                ],
+                "summary": "Find colleges by semester",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Semester",
+                        "name": "semester",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.College"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/college/{nim}": {
+            "get": {
+                "description": "Retrieve a single college by its NIM",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "colleges"
+                ],
+                "summary": "Get a college by NIM",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "College NIM",
+                        "name": "nim",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.College"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing college identified by NIM",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "colleges"
+                ],
+                "summary": "Update a college",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "College NIM",
+                        "name": "nim",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "College data",
+                        "name": "college",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateCollegeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.College"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a college identified by NIM",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "colleges"
+                ],
+                "summary": "Delete a college",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "College NIM",
+                        "name": "nim",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpSuccessResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/course/all": {
+            "get": {
+                "description": "Retrieve all course records",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "List all courses",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Course"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/course/create": {
+            "post": {
+                "description": "Create a new course record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "Create a new course",
+                "parameters": [
+                    {
+                        "description": "Course data",
+                        "name": "course",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCourseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Course"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/course/{code}": {
+            "get": {
+                "description": "Retrieve a single course by its code",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "Get a course by code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Course code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Course"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing course identified by code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "Update a course",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Course code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Course data",
+                        "name": "course",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateCourseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Course"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a course identified by code",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "Delete a course",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Course code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpSuccessResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/enrollment/create": {
+            "post": {
+                "description": "Enroll a college (NIM) into a course for a semester",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "enrollments"
+                ],
+                "summary": "Create a new enrollment",
+                "parameters": [
+                    {
+                        "description": "Enrollment data",
+                        "name": "enrollment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateEnrollmentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Enrollment"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/enrollment/nim/{nim}": {
+            "get": {
+                "description": "Retrieve all enrollments (with course detail) for a given college NIM",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "enrollments"
+                ],
+                "summary": "List enrollment details by NIM",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "College NIM",
+                        "name": "nim",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.HttpSuccessResp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.EnrollmentDetail"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/enrollment/{id}": {
+            "delete": {
+                "description": "Delete an enrollment identified by its id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "enrollments"
+                ],
+                "summary": "Delete an enrollment",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Enrollment id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpSuccessResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/enrollment/{nim}/{course}": {
+            "put": {
+                "description": "Update semester and grade for the enrollment identified by NIM and course code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "enrollments"
+                ],
+                "summary": "Update an enrollment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "College NIM",
+                        "name": "nim",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Course code",
+                        "name": "course",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Enrollment data",
+                        "name": "enrollment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateEnrollmentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HttpSuccessResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HTTPErrorResp"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CreateCollegeRequest": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nim": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "sks": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateCourseRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sks": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateEnrollmentRequest": {
+            "type": "object",
+            "properties": {
+                "course": {
+                    "type": "string"
+                },
+                "nim": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.HTTPErrorResp": {
+            "type": "object",
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/dto.Meta"
+                }
+            }
+        },
+        "dto.HttpSuccessResp": {
+            "type": "object",
+            "properties": {
+                "metadata": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.Meta"
+                        }
+                    ],
+                    "x-order": "0"
+                },
+                "data": {
+                    "x-order": "1"
+                }
+            }
+        },
+        "dto.Meta": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "x-order": "0"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "x-order": "1"
+                },
+                "status": {
+                    "type": "string",
+                    "x-order": "2"
+                },
+                "message": {
+                    "type": "string",
+                    "x-order": "3"
+                },
+                "error": {
+                    "type": "object",
+                    "x-order": "4"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "x-order": "5"
+                }
+            }
+        },
+        "dto.UpdateCollegeRequest": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "sks": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateCourseRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "sks": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateEnrollmentRequest": {
+            "type": "object",
+            "properties": {
+                "grade": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.College": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nim": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "sks": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Course": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sks": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Enrollment": {
+            "type": "object",
+            "properties": {
+                "course_code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "grade": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nim": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.EnrollmentDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "grade": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "sks": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

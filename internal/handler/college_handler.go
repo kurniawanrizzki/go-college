@@ -10,6 +10,18 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// CreateCollege godoc
+//
+//	@Summary		Create a new college
+//	@Description	Create a new college record
+//	@Tags			colleges
+//	@Accept			json
+//	@Produce		json
+//	@Param			college	body		dto.CreateCollegeRequest	true	"College data"
+//	@Success		201		{object}	dto.HttpSuccessResp{data=entity.College}
+//	@Failure		400		{object}	dto.HTTPErrorResp
+//	@Failure		500		{object}	dto.HTTPErrorResp
+//	@Router			/college/create [post]
 func (e *rest) CreateCollege(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -31,6 +43,15 @@ func (e *rest) CreateCollege(w http.ResponseWriter, r *http.Request) {
 	e.httpRespSuccess(w, r, http.StatusCreated, college)
 }
 
+// FindAll godoc
+//
+//	@Summary		List all colleges
+//	@Description	Retrieve all college records
+//	@Tags			colleges
+//	@Produce		json
+//	@Success		200	{object}	dto.HttpSuccessResp{data=[]entity.College}
+//	@Failure		500	{object}	dto.HTTPErrorResp
+//	@Router			/college/all [get]
 func (e *rest) FindAll(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	colleges, err := e.svc.College.FindAll(ctx)
@@ -43,6 +64,17 @@ func (e *rest) FindAll(w http.ResponseWriter, r *http.Request) {
 	e.httpRespSuccess(w, r, http.StatusOK, colleges)
 }
 
+// FindByNim godoc
+//
+//	@Summary		Get a college by NIM
+//	@Description	Retrieve a single college by its NIM
+//	@Tags			colleges
+//	@Produce		json
+//	@Param			nim	path		string	true	"College NIM"
+//	@Success		200	{object}	dto.HttpSuccessResp{data=entity.College}
+//	@Failure		400	{object}	dto.HTTPErrorResp
+//	@Failure		404	{object}	dto.HTTPErrorResp
+//	@Router			/college/{nim} [get]
 func (e *rest) FindByNim(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -63,6 +95,19 @@ func (e *rest) FindByNim(w http.ResponseWriter, r *http.Request) {
 	e.httpRespSuccess(w, r, http.StatusOK, college)
 }
 
+// UpdateCollege godoc
+//
+//	@Summary		Update a college
+//	@Description	Update an existing college identified by NIM
+//	@Tags			colleges
+//	@Accept			json
+//	@Produce		json
+//	@Param			nim		path		string						true	"College NIM"
+//	@Param			college	body		dto.UpdateCollegeRequest	true	"College data"
+//	@Success		200		{object}	dto.HttpSuccessResp{data=entity.College}
+//	@Failure		400		{object}	dto.HTTPErrorResp
+//	@Failure		404		{object}	dto.HTTPErrorResp
+//	@Router			/college/{nim} [put]
 func (e *rest) UpdateCollege(w http.ResponseWriter, r *http.Request) {
 	var req dto.UpdateCollegeRequest
 	ctx := r.Context()
@@ -90,6 +135,17 @@ func (e *rest) UpdateCollege(w http.ResponseWriter, r *http.Request) {
 	e.httpRespSuccess(w, r, http.StatusOK, college)
 }
 
+// DeleteCollege godoc
+//
+//	@Summary		Delete a college
+//	@Description	Delete a college identified by NIM
+//	@Tags			colleges
+//	@Produce		json
+//	@Param			nim	path		string	true	"College NIM"
+//	@Success		200	{object}	dto.HttpSuccessResp
+//	@Failure		400	{object}	dto.HTTPErrorResp
+//	@Failure		404	{object}	dto.HTTPErrorResp
+//	@Router			/college/{nim} [delete]
 func (e *rest) DeleteCollege(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -110,6 +166,16 @@ func (e *rest) DeleteCollege(w http.ResponseWriter, r *http.Request) {
 	e.httpRespSuccess(w, r, http.StatusOK, nil)
 }
 
+// FindByName godoc
+//
+//	@Summary		Find colleges by name
+//	@Description	Retrieve colleges matching the given name
+//	@Tags			colleges
+//	@Produce		json
+//	@Param			name	path		string	true	"College name"
+//	@Success		200		{object}	dto.HttpSuccessResp{data=[]entity.College}
+//	@Failure		400		{object}	dto.HTTPErrorResp
+//	@Router			/college/name/{name} [get]
 func (e *rest) FindByName(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -130,6 +196,16 @@ func (e *rest) FindByName(w http.ResponseWriter, r *http.Request) {
 	e.httpRespSuccess(w, r, http.StatusOK, colleges)
 }
 
+// FindBySemester godoc
+//
+//	@Summary		Find colleges by semester
+//	@Description	Retrieve colleges in the given semester
+//	@Tags			colleges
+//	@Produce		json
+//	@Param			semester	path		int	true	"Semester"
+//	@Success		200			{object}	dto.HttpSuccessResp{data=[]entity.College}
+//	@Failure		400			{object}	dto.HTTPErrorResp
+//	@Router			/college/semester/{semester} [get]
 func (e *rest) FindBySemester(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 

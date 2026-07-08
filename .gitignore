@@ -1,1 +1,5 @@
 go.sum
+
+# build artifacts
+/bin/
+

@@ -1,0 +1,680 @@
+definitions:
+  dto.CreateCollegeRequest:
+    properties:
+      active:
+        type: boolean
+      name:
+        type: string
+      nim:
+        type: string
+      semester:
+        type: integer
+      sks:
+        type: integer
+    type: object
+  dto.CreateCourseRequest:
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+      sks:
+        type: integer
+    type: object
+  dto.CreateEnrollmentRequest:
+    properties:
+      course:
+        type: string
+      nim:
+        type: string
+      semester:
+        type: integer
+    type: object
+  dto.HTTPErrorResp:
+    properties:
+      metadata:
+        $ref: '#/definitions/dto.Meta'
+    type: object
+  dto.HttpSuccessResp:
+    properties:
+      data:
+        x-order: "1"
+      metadata:
+        allOf:
+        - $ref: '#/definitions/dto.Meta'
+        x-order: "0"
+    type: object
+  dto.Meta:
+    properties:
+      error:
+        type: object
+        x-order: "4"
+      message:
+        type: string
+        x-order: "3"
+      path:
+        type: string
+        x-order: "0"
+      status:
+        type: string
+        x-order: "2"
+      status_code:
+        type: integer
+        x-order: "1"
+      timestamp:
+        type: string
+        x-order: "5"
+    type: object
+  dto.UpdateCollegeRequest:
+    properties:
+      active:
+        type: boolean
+      name:
+        type: string
+      semester:
+        type: integer
+      sks:
+        type: integer
+    type: object
+  dto.UpdateCourseRequest:
+    properties:
+      name:
+        type: string
+      sks:
+        type: integer
+    type: object
+  dto.UpdateEnrollmentRequest:
+    properties:
+      grade:
+        type: string
+      semester:
+        type: integer
+    type: object
+  entity.College:
+    properties:
+      active:
+        type: boolean
+      created_at:
+        type: string
+      name:
+        type: string
+      nim:
+        type: string
+      semester:
+        type: integer
+      sks:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  entity.Course:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      name:
+        type: string
+      sks:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  entity.Enrollment:
+    properties:
+      course_code:
+        type: string
+      created_at:
+        type: string
+      grade:
+        type: string
+      id:
+        type: integer
+      nim:
+        type: string
+      semester:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  entity.EnrollmentDetail:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      grade:
+        type: string
+      name:
+        type: string
+      semester:
+        type: integer
+      sks:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+host: localhost:8181
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: RESTful API for managing colleges, courses, and enrollments.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Go-College API
+  version: 1.0.0
+paths:
+  /college/{nim}:
+    delete:
+      description: Delete a college identified by NIM
+      parameters:
+      - description: College NIM
+        in: path
+        name: nim
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpSuccessResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Delete a college
+      tags:
+      - colleges
+    get:
+      description: Retrieve a single college by its NIM
+      parameters:
+      - description: College NIM
+        in: path
+        name: nim
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.College'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Get a college by NIM
+      tags:
+      - colleges
+    put:
+      consumes:
+      - application/json
+      description: Update an existing college identified by NIM
+      parameters:
+      - description: College NIM
+        in: path
+        name: nim
+        required: true
+        type: string
+      - description: College data
+        in: body
+        name: college
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCollegeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.College'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Update a college
+      tags:
+      - colleges
+  /college/all:
+    get:
+      description: Retrieve all college records
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.College'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: List all colleges
+      tags:
+      - colleges
+  /college/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new college record
+      parameters:
+      - description: College data
+        in: body
+        name: college
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCollegeRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.College'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Create a new college
+      tags:
+      - colleges
+  /college/name/{name}:
+    get:
+      description: Retrieve colleges matching the given name
+      parameters:
+      - description: College name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.College'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Find colleges by name
+      tags:
+      - colleges
+  /college/semester/{semester}:
+    get:
+      description: Retrieve colleges in the given semester
+      parameters:
+      - description: Semester
+        in: path
+        name: semester
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.College'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Find colleges by semester
+      tags:
+      - colleges
+  /course/{code}:
+    delete:
+      description: Delete a course identified by code
+      parameters:
+      - description: Course code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpSuccessResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Delete a course
+      tags:
+      - courses
+    get:
+      description: Retrieve a single course by its code
+      parameters:
+      - description: Course code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Course'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Get a course by code
+      tags:
+      - courses
+    put:
+      consumes:
+      - application/json
+      description: Update an existing course identified by code
+      parameters:
+      - description: Course code
+        in: path
+        name: code
+        required: true
+        type: string
+      - description: Course data
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCourseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Course'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Update a course
+      tags:
+      - courses
+  /course/all:
+    get:
+      description: Retrieve all course records
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Course'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: List all courses
+      tags:
+      - courses
+  /course/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new course record
+      parameters:
+      - description: Course data
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCourseRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Course'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Create a new course
+      tags:
+      - courses
+  /enrollment/{id}:
+    delete:
+      description: Delete an enrollment identified by its id
+      parameters:
+      - description: Enrollment id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpSuccessResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Delete an enrollment
+      tags:
+      - enrollments
+  /enrollment/{nim}/{course}:
+    put:
+      consumes:
+      - application/json
+      description: Update semester and grade for the enrollment identified by NIM
+        and course code
+      parameters:
+      - description: College NIM
+        in: path
+        name: nim
+        required: true
+        type: string
+      - description: Course code
+        in: path
+        name: course
+        required: true
+        type: string
+      - description: Enrollment data
+        in: body
+        name: enrollment
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateEnrollmentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.HttpSuccessResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Update an enrollment
+      tags:
+      - enrollments
+  /enrollment/create:
+    post:
+      consumes:
+      - application/json
+      description: Enroll a college (NIM) into a course for a semester
+      parameters:
+      - description: Enrollment data
+        in: body
+        name: enrollment
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateEnrollmentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Enrollment'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: Create a new enrollment
+      tags:
+      - enrollments
+  /enrollment/nim/{nim}:
+    get:
+      description: Retrieve all enrollments (with course detail) for a given college
+        NIM
+      parameters:
+      - description: College NIM
+        in: path
+        name: nim
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.HttpSuccessResp'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.EnrollmentDetail'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.HTTPErrorResp'
+      summary: List enrollment details by NIM
+      tags:
+      - enrollments
+schemes:
+- http
+- https
+swagger: "2.0"
