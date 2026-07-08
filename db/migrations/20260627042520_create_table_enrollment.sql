@@ -82,7 +82,7 @@ CREATE INDEX idx_enrollment_nim ON public.enrollment USING btree (nim) WITH (ded
 --
 
 ALTER TABLE ONLY public.enrollment
-    ADD CONSTRAINT college_course_fkey FOREIGN KEY (course_code) REFERENCES public.course(code) NOT VALID;
+    ADD CONSTRAINT college_course_fkey FOREIGN KEY (course_code) REFERENCES public.course(code) ON DELETE CASCADE NOT VALID;
 
 
 --

@@ -14,3 +14,14 @@ type UpdateCollegeRequest struct {
 	SKS      int
 	Active   *bool
 }
+
+type CreateCourseRequest struct {
+	Code string
+	Name string
+	SKS int
+}
+
+type UpdateCourseRequest struct {
+	Name string
+	SKS int
+}
