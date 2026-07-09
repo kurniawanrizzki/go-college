@@ -5,13 +5,13 @@ PostgreSQL (pgx), structured logging (zerolog), Prometheus metrics, and OpenTele
 
 ## Requirements
 
-| Tool         | Version                | Notes                                            |
-| ------------ | ---------------------- | ------------------------------------------------ |
-| Go           | 1.26.4+                | see `go.mod`                                      |
-| PostgreSQL   | 18.x (any recent 14+)  | database `go_college` is expected                 |
-| `swag` CLI   | v1.16.6                | only needed to regenerate Swagger docs           |
-| `golangci-lint` | v2.x                | only needed to run `make lint`                   |
-| `make`       | any                    | optional; wraps the build/run commands           |
+| Tool            | Version               | Notes                                  |
+| --------------- | --------------------- | -------------------------------------- |
+| Go              | 1.26.4+               | see `go.mod`                           |
+| PostgreSQL      | 18.x (any recent 14+) | database `go_college` is expected      |
+| `swag` CLI      | v1.16.6               | only needed to regenerate Swagger docs |
+| `golangci-lint` | v2.x                  | only needed to run `make lint`         |
+| `make`          | any                   | optional; wraps the build/run commands |
 
 ## 1. Clone & install dependencies
 
@@ -43,11 +43,11 @@ Add that line to your shell profile (`~/.zshrc` / `~/.bashrc`) to make it perman
 Configuration lives in `configs/config.yaml`. A few values are injected from the
 environment at startup (via `os.Expand`), so these **must be exported** before running:
 
-| Variable                  | Used for                          | Example                  |
-| ------------------------- | --------------------------------- | ------------------------ |
-| `POSTGRES_HOST`           | PostgreSQL host                   | `localhost`              |
-| `POSTGRES_DOCKER_PASSWORD`| Password for the `postgres` user  | `postgres`               |
-| `TRACER_HOST`             | OTLP/gRPC tracing collector host  | `localhost`              |
+| Variable                   | Used for                         | Example     |
+| -------------------------- | -------------------------------- | ----------- |
+| `POSTGRES_HOST`            | PostgreSQL host                  | `localhost` |
+| `POSTGRES_DOCKER_PASSWORD` | Password for the `postgres` user | `postgres`  |
+| `TRACER_HOST`              | OTLP/gRPC tracing collector host | `localhost` |
 
 Export them, for example:
 
@@ -136,26 +136,26 @@ go run ./cmd/api
 
 ### Main endpoints
 
-| Method | Path                          | Description                     |
-| ------ | ----------------------------- | ------------------------------- |
-| POST   | `/college/create`             | Create college                  |
-| GET    | `/college/all`                | List colleges                   |
-| GET    | `/college/{nim}`              | Get / update / delete by NIM    |
-| GET    | `/college/name/{name}`        | Find by name                    |
-| GET    | `/college/semester/{semester}`| Find by semester                |
-| POST   | `/course/create`              | Create course                   |
-| GET    | `/course/all`                 | List courses                    |
-| GET    | `/course/{code}`              | Get / update / delete by code   |
-| POST   | `/enrollment/create`          | Create enrollment               |
-| GET    | `/enrollment/nim/{nim}`       | Get enrollments by NIM          |
-| PUT    | `/enrollment/{nim}/{course}`  | Update enrollment               |
-| DELETE | `/enrollment/{id}`            | Delete enrollment               |
+| Method | Path                           | Description                   |
+| ------ | ------------------------------ | ----------------------------- |
+| POST   | `/college/create`              | Create college                |
+| GET    | `/college/all`                 | List colleges                 |
+| GET    | `/college/{nim}`               | Get / update / delete by NIM  |
+| GET    | `/college/name/{name}`         | Find by name                  |
+| GET    | `/college/semester/{semester}` | Find by semester              |
+| POST   | `/course/create`               | Create course                 |
+| GET    | `/course/all`                  | List courses                  |
+| GET    | `/course/{code}`               | Get / update / delete by code |
+| POST   | `/enrollment/create`           | Create enrollment             |
+| GET    | `/enrollment/nim/{nim}`        | Get enrollments by NIM        |
+| PUT    | `/enrollment/{nim}/{course}`   | Update enrollment             |
+| DELETE | `/enrollment/{id}`             | Delete enrollment             |
 
 See the Swagger UI for the full, up-to-date list and request/response schemas.
 
 ## Project layout
 
-```
+```text
 cmd/api/            application entrypoint
 configs/            config.yaml and SQL query files
 db/migrations/      PostgreSQL schema migrations

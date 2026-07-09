@@ -3,3 +3,6 @@ go.sum
 # build artifacts
 /bin/
 
+# editor
+.vscode/
+
