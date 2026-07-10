@@ -153,6 +153,23 @@ go run ./cmd/api
 
 See the Swagger UI for the full, up-to-date list and request/response schemas.
 
+## 6. Observability (traces & metrics)
+
+The app exports **OpenTelemetry traces** over OTLP/gRPC (`${TRACER_HOST}:4317`) and
+**Prometheus metrics** on `:9191/metrics`. A typical local stack visualizes both in
+Grafana:
+
+```text
+go-college ──OTLP:4317──▶ Jaeger ──────▶ Grafana (Jaeger datasource)
+   :8181     /metrics:9191 ──scrape──▶ Prometheus ──▶ Grafana (Prometheus datasource)
+```
+
+To view traces, open Grafana → **Explore** → select the **Jaeger** datasource →
+**Query type: Search** → **Service: `go-college-app`** → **Run query**, then open a
+trace to see its span waterfall:
+
+![Grafana Explore showing go-college-app traces via the Jaeger datasource](<asset/Screenshot 2026-07-10 at 10.18.05.png>)
+
 ## Project layout
 
 ```text

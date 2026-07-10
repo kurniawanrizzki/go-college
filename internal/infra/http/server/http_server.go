@@ -14,13 +14,17 @@ import (
 )
 
 type HttpServerOptions struct {
-	AppName      string
-	Mode         string
-	Port         int
+	AppName string `yaml:"app_name"`
+	Mode    string `yaml:"mode"`
+	Port    int    `yaml:"port"`
+	// NOTE: *Timeout fields are time.Duration; the config expresses them as
+	// strings ("10s"), which yaml.v3 cannot decode into an int64. They are
+	// intentionally left untagged so they keep their zero value instead of
+	// failing config load. Introduce a custom duration type to bind them.
 	WriteTimeout time.Duration
 	ReadTimeout  time.Duration
 	IdleTimeout  time.Duration
-	MaxBodyBytes int64
+	MaxBodyBytes int64 `yaml:"max_body_bytes"`
 }
 
 var (

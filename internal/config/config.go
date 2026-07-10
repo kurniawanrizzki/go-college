@@ -28,9 +28,9 @@ type Config struct {
 }
 
 type HTTPConfig struct {
-	Server        *httpserver.HttpServerOptions
-	MetricsServer *httpserver.HttpServerOptions
-	Client        *httpclient.HttpClientOptions
+	Server        *httpserver.HttpServerOptions `yaml:"server"`
+	MetricsServer *httpserver.HttpServerOptions `yaml:"metrics_server"`
+	Client        *httpclient.HttpClientOptions `yaml:"client"`
 }
 
 type DatabseConfig struct {
