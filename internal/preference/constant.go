@@ -49,8 +49,6 @@ const (
 	RouteCreateCollege       string = "/college/create"
 	RouteGetColleges         string = "/college/all"
 	RouteCollegeByNIM        string = "/college/{nim}"
-	RouteCollegeBySemester   string = "/college/semester/{semester}"
-	RouteCollegeByName       string = "/college/name/{name}"
 	RouteCreateCourse        string = "/course/create"
 	RouteGetCourses          string = "/course/all"
 	RouteCourseByCode        string = "/course/{code}"

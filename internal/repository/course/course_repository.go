@@ -3,6 +3,7 @@ package course
 import (
 	"context"
 
+	"go-college/internal/model/dto"
 	"go-college/internal/model/entity"
 	appErr "go-college/internal/model/errors"
 	"go-college/internal/util"
@@ -56,15 +57,32 @@ func (d *courseRepositoryImpl) Delete(ctx context.Context, code string) error {
 	return d.executeSQLCourse(ctx, "delete", query, args, err)
 }
 
-func (d *courseRepositoryImpl) FindAll(ctx context.Context) (*[]entity.Course, error) {
-	var results []entity.Course
+func (d *courseRepositoryImpl) FindAll(ctx context.Context, filter *dto.CourseFilter) (*[]entity.Course, *dto.Pagination, error) {
+	var (
+		results      []entity.Course
+		totalRecords int64
+	)
 
-	query, args, err := d.queryLoader.Compile("GetAllCourses", nil)
+	filter.Page = util.ValidatePage(filter.Page)
+	filter.PerPage = util.ValidateLimit(filter.PerPage)
+	filter.SortBy = sanitizeSortBy(filter.SortBy)
+	filter.SortDir = sanitizeSortDir(filter.SortDir)
+	filter.Limit = filter.PerPage
+	filter.Offset = (filter.Page - 1) * filter.PerPage
+
+	pagination := dto.Pagination{
+		Page:       filter.Page,
+		PageCount:  0,
+		TotalCount: 0,
+		PerPage:    filter.PerPage,
+	}
+
+	query, args, err := d.queryLoader.Compile("GetAllCourses", filter)
 
 	if err != nil {
 		tag := "build_find_courses_err"
 		zerolog.Ctx(ctx).Error().Err(err).Msg(tag)
-		return nil, appErr.WrapWithCode(err, appErr.CodeSQLQueryBuild, tag)
+		return nil, &pagination, appErr.WrapWithCode(err, appErr.CodeSQLQueryBuild, tag)
 	}
 
 	zerolog.Ctx(ctx).Debug().Str("query", util.CleanQuery(query)).Any("args", args).Msg("compiled_query")
@@ -74,7 +92,7 @@ func (d *courseRepositoryImpl) FindAll(ctx context.Context) (*[]entity.Course, e
 	if err != nil {
 		tag := "find_courses_err"
 		zerolog.Ctx(ctx).Error().Err(err).Msg(tag)
-		return nil, appErr.WrapWithCode(err, appErr.CodeSQLRowScan, tag)
+		return nil, &pagination, appErr.WrapWithCode(err, appErr.CodeSQLRowScan, tag)
 	}
 	defer rows.Close()
 
@@ -82,11 +100,34 @@ func (d *courseRepositoryImpl) FindAll(ctx context.Context) (*[]entity.Course, e
 		var course entity.Course
 		if scanErr := rows.Scan(&course.Code, &course.Name, &course.SKS, &course.CreatedAt, &course.UpdatedAt); scanErr != nil {
 			zerolog.Ctx(ctx).Error().Err(scanErr).Msg("scan_course_err")
-			return nil, appErr.WrapWithCode(scanErr, appErr.CodeSQLRowScan, "scan_course_err")
+			return nil, nil, appErr.WrapWithCode(scanErr, appErr.CodeSQLRowScan, "scan_course_err")
 		}
 
 		results = append(results, course)
 	}
 
-	return &results, nil
+	cQuery, cArgs, err := d.queryLoader.Compile("CountCourses", filter)
+
+	if err != nil {
+		zerolog.Ctx(ctx).Error().Err(err).Msg("count_courses_query_err")
+		return nil, &pagination, appErr.WrapWithCode(err, appErr.CodeSQLQueryBuild, "count_courses_query_err")
+	}
+
+	err = d.sql0.QueryRow(ctx, cQuery, cArgs...).Scan(&totalRecords)
+	if err != nil {
+		zerolog.Ctx(ctx).Error().Err(err).Msg("count_courses_err")
+		return nil, &pagination, appErr.WrapWithCode(err, appErr.CodeSQLRowScan, "count_courses_err")
+	}
+
+	var totalPage int64
+	if totalRecords > 0 {
+		totalPage = (totalRecords + filter.PerPage - 1) / filter.PerPage
+	} else {
+		totalPage = 0
+	}
+
+	pagination.PageCount = totalPage
+	pagination.TotalCount = totalRecords
+
+	return &results, &pagination, nil
 }

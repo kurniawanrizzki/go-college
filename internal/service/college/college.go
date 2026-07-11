@@ -12,12 +12,9 @@ import (
 
 type CollegeService interface {
 	Create(ctx context.Context, req dto.CreateCollegeRequest) (*entity.College, error)
-	FindAll(ctx context.Context) (*[]entity.College, error)
+	FindAll(ctx context.Context, filter *dto.CollegeFilter) (*[]entity.College, *dto.Pagination, error)
 	Update(ctx context.Context, nim string, req *dto.UpdateCollegeRequest) (*entity.College, error)
 	Delete(ctx context.Context, nim string) error
-	FindByNim(ctx context.Context, nim string) (*entity.College, error)
-	FindByName(ctx context.Context, name string) (*[]entity.College, error)
-	FindBySemester(ctx context.Context, semester int) (*[]entity.College, error)
 }
 
 type collegeServiceImpl struct {

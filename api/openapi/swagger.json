@@ -23,14 +23,52 @@
     "paths": {
         "/college/all": {
             "get": {
-                "description": "Retrieve all college records",
+                "description": "Retrieve college records with optional filtering, sorting and pagination",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "colleges"
                 ],
-                "summary": "List all colleges",
+                "summary": "List colleges",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by name (partial match)",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filter by semester",
+                        "name": "semester",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field (nim, name, semester, sks)",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort direction (asc, desc)",
+                        "name": "sort_dir",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "per_page",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -43,10 +81,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/entity.College"
-                                            }
+                                            "$ref": "#/definitions/dto.PaginatedResp"
                                         }
                                     }
                                 }
@@ -120,158 +155,7 @@
                 }
             }
         },
-        "/college/name/{name}": {
-            "get": {
-                "description": "Retrieve colleges matching the given name",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "colleges"
-                ],
-                "summary": "Find colleges by name",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "College name",
-                        "name": "name",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/dto.HttpSuccessResp"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/entity.College"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPErrorResp"
-                        }
-                    }
-                }
-            }
-        },
-        "/college/semester/{semester}": {
-            "get": {
-                "description": "Retrieve colleges in the given semester",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "colleges"
-                ],
-                "summary": "Find colleges by semester",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Semester",
-                        "name": "semester",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/dto.HttpSuccessResp"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/entity.College"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPErrorResp"
-                        }
-                    }
-                }
-            }
-        },
         "/college/{nim}": {
-            "get": {
-                "description": "Retrieve a single college by its NIM",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "colleges"
-                ],
-                "summary": "Get a college by NIM",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "College NIM",
-                        "name": "nim",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/dto.HttpSuccessResp"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/entity.College"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPErrorResp"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPErrorResp"
-                        }
-                    }
-                }
-            },
             "put": {
                 "description": "Update an existing college identified by NIM",
                 "consumes": [
@@ -377,14 +261,58 @@
         },
         "/course/all": {
             "get": {
-                "description": "Retrieve all course records",
+                "description": "Retrieve course records with optional filtering, sorting and pagination",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "courses"
                 ],
-                "summary": "List all courses",
+                "summary": "List courses",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by code (partial match)",
+                        "name": "code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by name (partial match)",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filter by SKS",
+                        "name": "sks",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field (code, name, sks)",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort direction (asc, desc)",
+                        "name": "sort_dir",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "per_page",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -397,10 +325,7 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/entity.Course"
-                                            }
+                                            "$ref": "#/definitions/dto.PaginatedResp"
                                         }
                                     }
                                 }
@@ -475,57 +400,6 @@
             }
         },
         "/course/{code}": {
-            "get": {
-                "description": "Retrieve a single course by its code",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "courses"
-                ],
-                "summary": "Get a course by code",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Course code",
-                        "name": "code",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/dto.HttpSuccessResp"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/entity.Course"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPErrorResp"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HTTPErrorResp"
-                        }
-                    }
-                }
-            },
             "put": {
                 "description": "Update an existing course identified by code",
                 "consumes": [
@@ -938,6 +812,24 @@
                 "timestamp": {
                     "type": "string",
                     "x-order": "5"
+                }
+            }
+        },
+        "dto.PaginatedResp": {
+            "type": "object",
+            "properties": {
+                "items": {},
+                "page": {
+                    "type": "integer"
+                },
+                "page_count": {
+                    "type": "integer"
+                },
+                "per_page": {
+                    "type": "integer"
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },

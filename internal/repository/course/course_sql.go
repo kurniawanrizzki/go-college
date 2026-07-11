@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"go-college/internal/model/entity"
 	appErr "go-college/internal/model/errors"
@@ -12,6 +13,42 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/rs/zerolog"
 )
+
+var (
+	allowedSortFields = map[string]string{
+		"code": "code",
+		"name": "name",
+		"sks":  "sks",
+	}
+
+	allowedSortDirs = map[string]string{
+		"asc":  "ASC",
+		"desc": "DESC",
+	}
+)
+
+func sanitizeSortBy(sortBy string) string {
+	normalized := normalizeString(sortBy)
+	if col, ok := allowedSortFields[normalized]; ok {
+		return col
+	}
+
+	return "code"
+}
+
+func sanitizeSortDir(sortDir string) string {
+	normalized := normalizeString(sortDir)
+	if dir, ok := allowedSortDirs[normalized]; ok {
+		return dir
+	}
+
+	return "ASC"
+}
+
+func normalizeString(s string) string {
+	s = strings.ToLower(strings.TrimSpace(s))
+	return s
+}
 
 func (d *courseRepositoryImpl) createSQLCourse(context context.Context, tx pgx.Tx, course *entity.Course) (pgx.Tx, *entity.Course, error) {
 	query, args, err := d.queryLoader.Compile("CreateCourse", course)

@@ -14,8 +14,7 @@ type CourseService interface {
 	Create(ctx context.Context, req dto.CreateCourseRequest) (*entity.Course, error)
 	Update(ctx context.Context, code string, req *dto.UpdateCourseRequest) (*entity.Course, error)
 	Delete(ctx context.Context, code string) error
-	FindAll(ctx context.Context) (*[]entity.Course, error)
-	FindByCode(ctx context.Context, code string) (*entity.Course, error)
+	FindAll(ctx context.Context, filter *dto.CourseFilter) (*[]entity.Course, *dto.Pagination, error)
 }
 
 type courseServiceImpl struct {

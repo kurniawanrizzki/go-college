@@ -65,6 +65,18 @@ definitions:
         type: string
         x-order: "5"
     type: object
+  dto.PaginatedResp:
+    properties:
+      items: {}
+      page:
+        type: integer
+      page_count:
+        type: integer
+      per_page:
+        type: integer
+      total_count:
+        type: integer
+    type: object
   dto.UpdateCollegeRequest:
     properties:
       active:
@@ -195,37 +207,6 @@ paths:
       summary: Delete a college
       tags:
       - colleges
-    get:
-      description: Retrieve a single college by its NIM
-      parameters:
-      - description: College NIM
-        in: path
-        name: nim
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpSuccessResp'
-            - properties:
-                data:
-                  $ref: '#/definitions/entity.College'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HTTPErrorResp'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.HTTPErrorResp'
-      summary: Get a college by NIM
-      tags:
-      - colleges
     put:
       consumes:
       - application/json
@@ -267,7 +248,32 @@ paths:
       - colleges
   /college/all:
     get:
-      description: Retrieve all college records
+      description: Retrieve college records with optional filtering, sorting and pagination
+      parameters:
+      - description: Filter by name (partial match)
+        in: query
+        name: name
+        type: string
+      - description: Filter by semester
+        in: query
+        name: semester
+        type: integer
+      - description: Sort field (nim, name, semester, sks)
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort direction (asc, desc)
+        in: query
+        name: sort_dir
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: per_page
+        type: integer
       produces:
       - application/json
       responses:
@@ -278,15 +284,13 @@ paths:
             - $ref: '#/definitions/dto.HttpSuccessResp'
             - properties:
                 data:
-                  items:
-                    $ref: '#/definitions/entity.College'
-                  type: array
+                  $ref: '#/definitions/dto.PaginatedResp'
               type: object
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.HTTPErrorResp'
-      summary: List all colleges
+      summary: List colleges
       tags:
       - colleges
   /college/create:
@@ -324,66 +328,6 @@ paths:
       summary: Create a new college
       tags:
       - colleges
-  /college/name/{name}:
-    get:
-      description: Retrieve colleges matching the given name
-      parameters:
-      - description: College name
-        in: path
-        name: name
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpSuccessResp'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/entity.College'
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HTTPErrorResp'
-      summary: Find colleges by name
-      tags:
-      - colleges
-  /college/semester/{semester}:
-    get:
-      description: Retrieve colleges in the given semester
-      parameters:
-      - description: Semester
-        in: path
-        name: semester
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpSuccessResp'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/entity.College'
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HTTPErrorResp'
-      summary: Find colleges by semester
-      tags:
-      - colleges
   /course/{code}:
     delete:
       description: Delete a course identified by code
@@ -409,37 +353,6 @@ paths:
           schema:
             $ref: '#/definitions/dto.HTTPErrorResp'
       summary: Delete a course
-      tags:
-      - courses
-    get:
-      description: Retrieve a single course by its code
-      parameters:
-      - description: Course code
-        in: path
-        name: code
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/dto.HttpSuccessResp'
-            - properties:
-                data:
-                  $ref: '#/definitions/entity.Course'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.HTTPErrorResp'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.HTTPErrorResp'
-      summary: Get a course by code
       tags:
       - courses
     put:
@@ -483,7 +396,36 @@ paths:
       - courses
   /course/all:
     get:
-      description: Retrieve all course records
+      description: Retrieve course records with optional filtering, sorting and pagination
+      parameters:
+      - description: Filter by code (partial match)
+        in: query
+        name: code
+        type: string
+      - description: Filter by name (partial match)
+        in: query
+        name: name
+        type: string
+      - description: Filter by SKS
+        in: query
+        name: sks
+        type: integer
+      - description: Sort field (code, name, sks)
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort direction (asc, desc)
+        in: query
+        name: sort_dir
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: per_page
+        type: integer
       produces:
       - application/json
       responses:
@@ -494,15 +436,13 @@ paths:
             - $ref: '#/definitions/dto.HttpSuccessResp'
             - properties:
                 data:
-                  items:
-                    $ref: '#/definitions/entity.Course'
-                  type: array
+                  $ref: '#/definitions/dto.PaginatedResp'
               type: object
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.HTTPErrorResp'
-      summary: List all courses
+      summary: List courses
       tags:
       - courses
   /course/create:

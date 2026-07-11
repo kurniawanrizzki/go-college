@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
+	"go-college/internal/model/dto"
 	"go-college/internal/model/entity"
 	appErr "go-college/internal/model/errors"
 	"go-college/internal/util"
@@ -12,6 +14,43 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/rs/zerolog"
 )
+
+var (
+	allowedSortFields = map[string]string{
+		"nim":      "nim",
+		"name":     "name",
+		"semester": "semester",
+		"sks":      "sks",
+	}
+
+	allowedSortDirs = map[string]string{
+		"asc":  "ASC",
+		"desc": "DESC",
+	}
+)
+
+func sanitizeSortBy(sortBy string) string {
+	normalized := normalizeString(sortBy)
+	if col, ok := allowedSortFields[normalized]; ok {
+		return col
+	}
+
+	return "nim"
+}
+
+func sanitizeSortDir(sortDir string) string {
+	normalized := normalizeString(sortDir)
+	if dir, ok := allowedSortDirs[normalized]; ok {
+		return dir
+	}
+
+	return "ASC"
+}
+
+func normalizeString(s string) string {
+	s = strings.ToLower(strings.TrimSpace(s))
+	return s
+}
 
 func (d *collegeRepositoryImpl) createSQLCollege(ctx context.Context, tx pgx.Tx, college *entity.College) (pgx.Tx, *entity.College, error) {
 	query, args, err := d.queryLoader.Compile("CreateCollege", college)
@@ -65,15 +104,32 @@ func (d *collegeRepositoryImpl) findSQLCollegeByNIM(ctx context.Context, nim str
 	return &college, nil
 }
 
-func (d *collegeRepositoryImpl) findSQLByArgs(ctx context.Context, key string, query string, data map[string]any) (*[]entity.College, error) {
-	var results []entity.College
+func (d *collegeRepositoryImpl) findSQLColleges(ctx context.Context, filter *dto.CollegeFilter) (*[]entity.College, *dto.Pagination, error) {
+	var (
+		results      []entity.College
+		totalRecords int64
+	)
 
-	query, args, err := d.queryLoader.Compile(query, data)
+	filter.Page = util.ValidatePage(filter.Page)
+	filter.PerPage = util.ValidateLimit(filter.PerPage)
+	filter.SortBy = sanitizeSortBy(filter.SortBy)
+	filter.SortDir = sanitizeSortDir(filter.SortDir)
+	filter.Limit = filter.PerPage
+	filter.Offset = (filter.Page - 1) * filter.PerPage
+
+	pagination := dto.Pagination{
+		Page:       filter.Page,
+		PageCount:  0,
+		TotalCount: 0,
+		PerPage:    filter.PerPage,
+	}
+
+	query, args, err := d.queryLoader.Compile("FindColleges", filter)
 
 	if err != nil {
-		tag := fmt.Sprintf("build_find_%v_err", key)
+		tag := "build_find_colleges_err"
 		zerolog.Ctx(ctx).Error().Err(err).Msg(tag)
-		return nil, appErr.WrapWithCode(err, appErr.CodeSQLQueryBuild, tag)
+		return nil, &pagination, appErr.WrapWithCode(err, appErr.CodeSQLQueryBuild, tag)
 	}
 
 	zerolog.Ctx(ctx).Debug().Str("query", util.CleanQuery(query)).Any("args", args).Msg("compiled_query")
@@ -81,9 +137,9 @@ func (d *collegeRepositoryImpl) findSQLByArgs(ctx context.Context, key string, q
 	rows, err := d.sql0.Query(ctx, query, args...)
 
 	if err != nil {
-		tag := fmt.Sprintf("find_%v_err", key)
+		tag := "find_colleges_err"
 		zerolog.Ctx(ctx).Error().Err(err).Msg(tag)
-		return nil, appErr.WrapWithCode(err, appErr.CodeSQLRowScan, tag)
+		return nil, &pagination, appErr.WrapWithCode(err, appErr.CodeSQLRowScan, tag)
 	}
 	defer rows.Close()
 
@@ -91,13 +147,36 @@ func (d *collegeRepositoryImpl) findSQLByArgs(ctx context.Context, key string, q
 		var college entity.College
 		if scanErr := rows.Scan(&college.NIM, &college.Name, &college.Semester, &college.SKS, &college.Active, &college.CreatedAt, &college.UpdatedAt); scanErr != nil {
 			zerolog.Ctx(ctx).Error().Err(scanErr).Msg("scan_college_err")
-			return nil, appErr.WrapWithCode(scanErr, appErr.CodeSQLRowScan, "scan_college_err")
+			return nil, nil, appErr.WrapWithCode(scanErr, appErr.CodeSQLRowScan, "scan_college_err")
 		}
 
 		results = append(results, college)
 	}
 
-	return &results, nil
+	cQuery, cArgs, err := d.queryLoader.Compile("CountColleges", filter)
+
+	if err != nil {
+		zerolog.Ctx(ctx).Error().Err(err).Msg("count_colleges_query_err")
+		return nil, &pagination, appErr.WrapWithCode(err, appErr.CodeSQLQueryBuild, "count_colleges_query_err")
+	}
+
+	err = d.sql0.QueryRow(ctx, cQuery, cArgs...).Scan(&totalRecords)
+	if err != nil {
+		zerolog.Ctx(ctx).Error().Err(err).Msg("count_colleges_err")
+		return nil, &pagination, appErr.WrapWithCode(err, appErr.CodeSQLRowScan, "count_colleges_err")
+	}
+
+	var totalPage int64
+	if totalRecords > 0 {
+		totalPage = (totalRecords + filter.PerPage - 1) / filter.PerPage
+	} else {
+		totalPage = 0
+	}
+
+	pagination.PageCount = totalPage
+	pagination.TotalCount = totalRecords
+
+	return &results, &pagination, nil
 }
 
 func (d *collegeRepositoryImpl) executeSQLCollege(ctx context.Context, key string, query string, args []any, err error) error {

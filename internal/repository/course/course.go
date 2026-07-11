@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"go-college/internal/infra/query"
+	"go-college/internal/model/dto"
 	"go-college/internal/model/entity"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -14,7 +15,7 @@ type CourseRepository interface {
 	Create(ctx context.Context, course *entity.Course) (*entity.Course, error)
 	Update(ctx context.Context, course *entity.Course) error
 	Delete(ctx context.Context, code string) error
-	FindAll(ctx context.Context) (*[]entity.Course, error)
+	FindAll(ctx context.Context, filter *dto.CourseFilter) (*[]entity.Course, *dto.Pagination, error)
 	FindByCode(ctx context.Context, code string) (*entity.Course, error)
 }
 

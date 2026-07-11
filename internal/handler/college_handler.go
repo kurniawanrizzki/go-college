@@ -46,54 +46,61 @@ func (e *rest) CreateCollege(w http.ResponseWriter, r *http.Request) {
 
 // FindAll godoc
 //
-//	@Summary		List all colleges
-//	@Description	Retrieve all college records
+//	@Summary		List colleges
+//	@Description	Retrieve college records with optional filtering, sorting and pagination
 //	@Tags			colleges
 //	@Produce		json
-//	@Success		200	{object}	dto.HttpSuccessResp{data=[]entity.College}
+//	@Param			name		query		string	false	"Filter by name (partial match)"
+//	@Param			semester	query		int		false	"Filter by semester"
+//	@Param			sort_by		query		string	false	"Sort field (nim, name, semester, sks)"
+//	@Param			sort_dir	query		string	false	"Sort direction (asc, desc)"
+//	@Param			page		query		int		false	"Page number"
+//	@Param			per_page	query		int		false	"Items per page"
+//	@Success		200	{object}	dto.HttpSuccessResp{data=dto.PaginatedResp}
 //	@Failure		500	{object}	dto.HTTPErrorResp
 //	@Router			/college/all [get]
 func (e *rest) FindAll(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	colleges, err := e.svc.College.FindAll(ctx)
+
+	filter := parseCollegeFilter(r)
+
+	colleges, pagination, err := e.svc.College.FindAll(ctx, filter)
 
 	if err != nil {
 		e.httpRespError(w, r, err)
 		return
 	}
 
-	e.httpRespSuccess(w, r, http.StatusOK, colleges)
+	e.httpRespSuccess(w, r, http.StatusOK, dto.PaginatedResp{
+		Items:      colleges,
+		Page:       pagination.Page,
+		PerPage:    pagination.PerPage,
+		PageCount:  pagination.PageCount,
+		TotalCount: pagination.TotalCount,
+	})
 }
 
-// FindByNim godoc
-//
-//	@Summary		Get a college by NIM
-//	@Description	Retrieve a single college by its NIM
-//	@Tags			colleges
-//	@Produce		json
-//	@Param			nim	path		string	true	"College NIM"
-//	@Success		200	{object}	dto.HttpSuccessResp{data=entity.College}
-//	@Failure		400	{object}	dto.HTTPErrorResp
-//	@Failure		404	{object}	dto.HTTPErrorResp
-//	@Router			/college/{nim} [get]
-func (e *rest) FindByNim(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+func parseCollegeFilter(r *http.Request) *dto.CollegeFilter {
+	q := r.URL.Query()
 
-	nim := r.PathValue("nim")
-	if nim == "" {
-		zerolog.Ctx(ctx).Error().Msg("invalid_college_id")
-		e.httpRespError(w, r, appErr.WrapWithCode(nil, appErr.CodeHTTPBadRequest, "invalid_college_id"))
-		return
+	filter := &dto.CollegeFilter{
+		NIM:     q.Get("nim"),
+		Name:    q.Get("name"),
+		SortBy:  q.Get("sort_by"),
+		SortDir: q.Get("sort_dir"),
 	}
 
-	college, err := e.svc.College.FindByNim(ctx, nim)
-
-	if err != nil {
-		e.httpRespError(w, r, err)
-		return
+	if semester, err := strconv.ParseInt(q.Get("semester"), 10, 64); err == nil {
+		filter.Semester = semester
+	}
+	if page, err := strconv.ParseInt(q.Get("page"), 10, 64); err == nil {
+		filter.Page = page
+	}
+	if perPage, err := strconv.ParseInt(q.Get("per_page"), 10, 64); err == nil {
+		filter.PerPage = perPage
 	}
 
-	e.httpRespSuccess(w, r, http.StatusOK, college)
+	return filter
 }
 
 // UpdateCollege godoc
@@ -165,72 +172,4 @@ func (e *rest) DeleteCollege(w http.ResponseWriter, r *http.Request) {
 	}
 
 	e.httpRespSuccess(w, r, http.StatusOK, nil)
-}
-
-// FindByName godoc
-//
-//	@Summary		Find colleges by name
-//	@Description	Retrieve colleges matching the given name
-//	@Tags			colleges
-//	@Produce		json
-//	@Param			name	path		string	true	"College name"
-//	@Success		200		{object}	dto.HttpSuccessResp{data=[]entity.College}
-//	@Failure		400		{object}	dto.HTTPErrorResp
-//	@Router			/college/name/{name} [get]
-func (e *rest) FindByName(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	name := r.PathValue("name")
-	if name == "" {
-		zerolog.Ctx(ctx).Error().Msg("invalid_college_name")
-		e.httpRespError(w, r, appErr.WrapWithCode(nil, appErr.CodeHTTPBadRequest, "invalid_college_name"))
-		return
-	}
-
-	colleges, err := e.svc.College.FindByName(ctx, name)
-
-	if err != nil {
-		e.httpRespError(w, r, err)
-		return
-	}
-
-	e.httpRespSuccess(w, r, http.StatusOK, colleges)
-}
-
-// FindBySemester godoc
-//
-//	@Summary		Find colleges by semester
-//	@Description	Retrieve colleges in the given semester
-//	@Tags			colleges
-//	@Produce		json
-//	@Param			semester	path		int	true	"Semester"
-//	@Success		200			{object}	dto.HttpSuccessResp{data=[]entity.College}
-//	@Failure		400			{object}	dto.HTTPErrorResp
-//	@Router			/college/semester/{semester} [get]
-func (e *rest) FindBySemester(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	semester := r.PathValue("semester")
-	if semester == "" {
-		zerolog.Ctx(ctx).Error().Msg("invalid_college_semester")
-		e.httpRespError(w, r, appErr.WrapWithCode(nil, appErr.CodeHTTPBadRequest, "invalid_college_semester"))
-		return
-	}
-
-	parsed, err := strconv.Atoi(semester)
-
-	if err != nil {
-		zerolog.Ctx(ctx).Error().Msg("invalid_college_semester")
-		e.httpRespError(w, r, appErr.WrapWithCode(nil, appErr.CodeHTTPBadRequest, "invalid_college_semester"))
-		return
-	}
-
-	colleges, err := e.svc.College.FindBySemester(ctx, parsed)
-
-	if err != nil {
-		e.httpRespError(w, r, err)
-		return
-	}
-
-	e.httpRespSuccess(w, r, http.StatusOK, colleges)
 }

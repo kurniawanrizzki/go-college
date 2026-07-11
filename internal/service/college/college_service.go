@@ -27,12 +27,12 @@ func (s *collegeServiceImpl) Create(ctx context.Context, req dto.CreateCollegeRe
 	return college, nil
 }
 
-func (s *collegeServiceImpl) FindAll(ctx context.Context) (*[]entity.College, error) {
-	return s.repository.FindAll(ctx)
+func (s *collegeServiceImpl) FindAll(ctx context.Context, filter *dto.CollegeFilter) (*[]entity.College, *dto.Pagination, error) {
+	return s.repository.FindAll(ctx, filter)
 }
 
 func (s *collegeServiceImpl) Update(ctx context.Context, nim string, req *dto.UpdateCollegeRequest) (*entity.College, error) {
-	existing, err := s.FindByNim(ctx, nim)
+	existing, err := s.repository.FindByNim(ctx, nim)
 
 	if err != nil {
 		return nil, appErr.WrapWithCode(err, appErr.CodeHTTPNotFound, "college_not_found")
@@ -66,16 +66,4 @@ func (s *collegeServiceImpl) Update(ctx context.Context, nim string, req *dto.Up
 
 func (s *collegeServiceImpl) Delete(ctx context.Context, nim string) error {
 	return s.repository.Delete(ctx, nim)
-}
-
-func (s *collegeServiceImpl) FindByNim(ctx context.Context, nim string) (*entity.College, error) {
-	return s.repository.FindByNim(ctx, nim)
-}
-
-func (s *collegeServiceImpl) FindByName(ctx context.Context, name string) (*[]entity.College, error) {
-	return s.repository.FindByName(ctx, name)
-}
-
-func (s *collegeServiceImpl) FindBySemester(ctx context.Context, semester int) (*[]entity.College, error) {
-	return s.repository.FindBySemester(ctx, semester)
 }

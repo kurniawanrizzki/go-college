@@ -3,6 +3,7 @@ package college
 import (
 	"context"
 
+	"go-college/internal/model/dto"
 	"go-college/internal/model/entity"
 	appErr "go-college/internal/model/errors"
 
@@ -40,8 +41,8 @@ func (d *collegeRepositoryImpl) Create(ctx context.Context, college *entity.Coll
 	return college, nil
 }
 
-func (d *collegeRepositoryImpl) FindAll(ctx context.Context) (*[]entity.College, error) {
-	return d.findSQLByArgs(ctx, "colleges", "FindColleges", nil)
+func (d *collegeRepositoryImpl) FindAll(ctx context.Context, filter *dto.CollegeFilter) (*[]entity.College, *dto.Pagination, error) {
+	return d.findSQLColleges(ctx, filter)
 }
 
 func (d *collegeRepositoryImpl) Update(ctx context.Context, college *entity.College) error {
@@ -56,12 +57,4 @@ func (d *collegeRepositoryImpl) Delete(ctx context.Context, nim string) error {
 
 func (d *collegeRepositoryImpl) FindByNim(ctx context.Context, nim string) (*entity.College, error) {
 	return d.findSQLCollegeByNIM(ctx, nim)
-}
-
-func (d *collegeRepositoryImpl) FindByName(ctx context.Context, name string) (*[]entity.College, error) {
-	return d.findSQLByArgs(ctx, "nim", "FindCollegeByName", map[string]any{"Name": name})
-}
-
-func (d *collegeRepositoryImpl) FindBySemester(ctx context.Context, semester int) (*[]entity.College, error) {
-	return d.findSQLByArgs(ctx, "semester", "FindCollegeBySemester", map[string]any{"Semester": semester})
 }
